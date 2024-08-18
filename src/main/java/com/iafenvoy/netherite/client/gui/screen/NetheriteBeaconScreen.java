@@ -2,6 +2,7 @@ package com.iafenvoy.netherite.client.gui.screen;
 
 import com.google.common.collect.Lists;
 import com.iafenvoy.netherite.NetheriteExtension;
+import com.iafenvoy.netherite.client.RenderUtil;
 import com.iafenvoy.netherite.network.UpdateNetheriteBeaconC2SPacket;
 import com.iafenvoy.netherite.screen.NetheriteBeaconScreenHandler;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -10,13 +11,13 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.PressableWidget;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerInventory;
@@ -123,30 +124,30 @@ public class NetheriteBeaconScreen extends HandledScreen<NetheriteBeaconScreenHa
     }
 
     @Override
-    protected void drawForeground(DrawContext context, int mouseX, int mouseY) {
-        context.drawCenteredTextWithShadow(this.textRenderer, PRIMARY_TEXT, 62, 10, 14737632);
-        context.drawCenteredTextWithShadow(this.textRenderer, SECONDARY_TEXT, 169, 10, 14737632);
-        context.drawCenteredTextWithShadow(this.textRenderer, TERTIARY_TEXT, 169, 58, 14737632);
+    protected void drawForeground(MatrixStack matrices, int mouseX, int mouseY) {
+        this.textRenderer.drawWithShadow(matrices, PRIMARY_TEXT, 62, 10, 14737632);
+        this.textRenderer.drawWithShadow(matrices, SECONDARY_TEXT, 169, 10, 14737632);
+        this.textRenderer.drawWithShadow(matrices, TERTIARY_TEXT, 169, 58, 14737632);
     }
 
     @Override
-    protected void drawBackground(DrawContext context, float delta, int mouseX, int mouseY) {
+    protected void drawBackground(MatrixStack matrices, float delta, int mouseX, int mouseY) {
         RenderSystem.setShader(GameRenderer::getPositionTexProgram);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         int i = (this.width - this.backgroundWidth) / 2;
         int j = (this.height - this.backgroundHeight) / 2;
-        context.drawTexture(TEXTURE, i, j, 0, 0, this.backgroundWidth, this.backgroundHeight);
-        context.getMatrices().push();
-        context.getMatrices().translate(0.0F, 0.0F, 100.0F);
-        context.drawItem(new ItemStack(Items.NETHERITE_INGOT), i + 42 + 66, j + 109);
-        context.getMatrices().pop();
+        RenderUtil.drawTexture(matrices, TEXTURE, i, j, 0, 0, this.backgroundWidth, this.backgroundHeight);
+        matrices.push();
+        matrices.translate(0.0F, 0.0F, 100.0F);
+        MinecraftClient.getInstance().getItemRenderer().renderInGui(matrices, new ItemStack(Items.NETHERITE_INGOT), i + 42 + 66, j + 109);
+        matrices.pop();
     }
 
     @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        this.renderBackground(context);
-        super.render(context, mouseX, mouseY, delta);
-        this.drawMouseoverTooltip(context, mouseX, mouseY);
+    public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+        this.renderBackground(matrices);
+        super.render(matrices, mouseX, mouseY, delta);
+        this.drawMouseoverTooltip(matrices, mouseX, mouseY);
     }
 
     @Environment(EnvType.CLIENT)
@@ -166,8 +167,8 @@ public class NetheriteBeaconScreen extends HandledScreen<NetheriteBeaconScreenHa
         }
 
         @Override
-        protected void renderExtra(DrawContext graphics) {
-            graphics.drawTexture(TEXTURE, this.getX() + 2, this.getY() + 2, this.u, this.v, 18, 18);
+        protected void renderExtra(MatrixStack matrices) {
+            RenderUtil.drawTexture(matrices, TEXTURE, this.getX() + 2, this.getY() + 2, this.u, this.v, 18, 18);
         }
     }
 
@@ -184,17 +185,17 @@ public class NetheriteBeaconScreen extends HandledScreen<NetheriteBeaconScreenHa
         }
 
         @Override
-        public void render(DrawContext graphics, int mouseX, int mouseY, float delta) {
+        public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
             RenderSystem.setShaderTexture(0, NetheriteBeaconScreen.TEXTURE);
             int uStart = 0;
             if (!this.active) uStart += this.width * 2;
             else if (this.disabled) uStart += this.width;
             else if (this.isHovered()) uStart += this.width * 3;
-            graphics.drawTexture(TEXTURE, this.getX(), this.getY(), uStart, 219, this.width, this.height);
-            this.renderExtra(graphics);
+            RenderUtil.drawTexture(matrices, TEXTURE, this.getX(), this.getY(), uStart, 219, this.width, this.height);
+            this.renderExtra(matrices);
         }
 
-        protected abstract void renderExtra(DrawContext graphics);
+        protected abstract void renderExtra(MatrixStack graphics);
 
         public boolean isDisabled() {
             return this.disabled;
@@ -287,9 +288,9 @@ public class NetheriteBeaconScreen extends HandledScreen<NetheriteBeaconScreenHa
         }
 
         @Override
-        protected void renderExtra(DrawContext context) {
+        protected void renderExtra(MatrixStack matrices) {
             RenderSystem.setShaderTexture(0, this.sprite.getAtlasId());
-            context.drawSprite(this.getX() + 2, this.getY() + 2, 0, 18, 18, this.sprite);
+            RenderUtil.drawSprite(matrices, this.getX() + 2, this.getY() + 2, 0, 18, 18, this.sprite);
         }
 
         @Override

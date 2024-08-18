@@ -20,7 +20,7 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.loot.context.LootContextParameterSet;
+import net.minecraft.loot.context.LootContext;
 import net.minecraft.loot.context.LootContextParameters;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.screen.ScreenHandler;
@@ -155,10 +155,10 @@ public class NetheriteShulkerBoxBlock extends BlockWithEntity {
     }
 
     @Override
-    public List<ItemStack> getDroppedStacks(BlockState state, LootContextParameterSet.Builder builder) {
-        BlockEntity blockEntity = builder.getOptional(LootContextParameters.BLOCK_ENTITY);
+    public List<ItemStack> getDroppedStacks(BlockState state, LootContext.Builder builder) {
+        BlockEntity blockEntity = builder.get(LootContextParameters.BLOCK_ENTITY);
         if (blockEntity instanceof NetheriteShulkerBoxBlockEntity shulkerBoxBlockEntity)
-            builder = builder.addDynamicDrop(CONTENTS, (consumer) -> {
+            builder = builder.putDrop(CONTENTS, (ctx, consumer) -> {
                 for (int i = 0; i < shulkerBoxBlockEntity.size(); ++i)
                     consumer.accept(shulkerBoxBlockEntity.getStack(i));
             });

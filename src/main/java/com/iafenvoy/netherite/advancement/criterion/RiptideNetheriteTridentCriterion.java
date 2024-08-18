@@ -6,7 +6,7 @@ import net.minecraft.advancement.criterion.AbstractCriterion;
 import net.minecraft.advancement.criterion.AbstractCriterionConditions;
 import net.minecraft.predicate.entity.AdvancementEntityPredicateDeserializer;
 import net.minecraft.predicate.entity.AdvancementEntityPredicateSerializer;
-import net.minecraft.predicate.entity.LootContextPredicate;
+import net.minecraft.predicate.entity.EntityPredicate;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
@@ -19,7 +19,7 @@ public class RiptideNetheriteTridentCriterion extends AbstractCriterion<RiptideN
     }
 
     @Override
-    public Conditions conditionsFromJson(JsonObject jsonObject, LootContextPredicate extended, AdvancementEntityPredicateDeserializer advancementEntityPredicateDeserializer) {
+    public Conditions conditionsFromJson(JsonObject jsonObject, EntityPredicate.Extended extended, AdvancementEntityPredicateDeserializer advancementEntityPredicateDeserializer) {
         return new Conditions(extended);
     }
 
@@ -28,7 +28,7 @@ public class RiptideNetheriteTridentCriterion extends AbstractCriterion<RiptideN
     }
 
     public static class Conditions extends AbstractCriterionConditions {
-        public Conditions(LootContextPredicate player) {
+        public Conditions(EntityPredicate.Extended player) {
             super(id, player);
         }
 
