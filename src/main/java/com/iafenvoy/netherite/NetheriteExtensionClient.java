@@ -42,8 +42,6 @@ public class NetheriteExtensionClient implements ClientModInitializer {
 
     public static void registerBuiltinItemRenderers(MinecraftClient client) {
         NetheritePlusBuiltinItemModelRenderer builtinItemModelRenderer = new NetheritePlusBuiltinItemModelRenderer(client.getBlockEntityRenderDispatcher(), client.getEntityModelLoader());
-        ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(builtinItemModelRenderer);
-
         BuiltinItemRendererRegistry.DynamicItemRenderer dynamicItemRenderer = builtinItemModelRenderer::render;
         BuiltinItemRendererRegistry.INSTANCE.register(NetheriteExtItems.NETHERITE_SHULKER_BOX, dynamicItemRenderer);
         BuiltinItemRendererRegistry.INSTANCE.register(NetheriteExtItems.NETHERITE_WHITE_SHULKER_BOX, dynamicItemRenderer);
