@@ -71,7 +71,7 @@ jar {
         rename { "${it}_${project.archivesBaseName}" }
     }
     from("LICENSE_Origin") {
-        rename { "${it}_Origin_NetheritePlus" }
+        rename { "${it}_NetheritePlus" }
     }
 }
 
